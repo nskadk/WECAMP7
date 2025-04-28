@@ -1,0 +1,684 @@
+{
+	"info": {
+		"_postman_id": "ede55dc4-cb79-4202-a470-92e6a6ee9fd5",
+		"name": "API Product Create Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23361327"
+	},
+	"item": [
+		{
+			"name": "Functional",
+			"item": [
+				{
+					"name": "TC_01 - Create product with valid data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 - Created\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Created product matches request data\", function () {\r",
+									"    const req = pm.request.body ? JSON.parse(pm.request.body.raw) : {};\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.name).to.eql(req.name);\r",
+									"    pm.expect(res.price).to.eql(req.price);\r",
+									"    pm.expect(res.description).to.eql(req.description);\r",
+									"    pm.expect(res.brand).to.eql(req.brand);\r",
+									"    pm.expect(res.category).to.eql(req.category);\r",
+									"    pm.expect(res.countInStock).to.eql(req.countInStock);\r",
+									"    // Nếu có reviews trong request\r",
+									"    if (req.reviews) {\r",
+									"        pm.expect(res.reviews).to.eql(req.reviews);\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Test Product\",\r\n  \"brand\": \"Test Brand\",\r\n  \"category\": \"Test Category\",\r\n  \"description\": \"This is a great test product.\",\r\n  \"image\": \"/images/test.jpg\",\r\n  \"price\": 100,\r\n  \"countInStock\": 50,\r\n  \"rating\": 4.5,\r\n  \"numReviews\": 10,\r\n  \"reviews\": [\r\n    {\r\n      \"name\": \"Alice\",\r\n      \"rating\": 5,\r\n      \"comment\": \"Excellent!\"\r\n    },\r\n    {\r\n      \"name\": \"Bob\",\r\n      \"rating\": 4,\r\n      \"comment\": \"Very good!\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}",
+							"host": [
+								"{{env_variable}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_02 - Missing optional field reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201 - Created\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Created product without reviews field still valid\", function () {\r",
+									"    const req = pm.request.body ? JSON.parse(pm.request.body.raw) : {};\r",
+									"    const res = pm.response.json();\r",
+									"\r",
+									"    pm.expect(res.name).to.eql(req.name);\r",
+									"    pm.expect(res.price).to.eql(req.price);\r",
+									"    pm.expect(res.description).to.eql(req.description);\r",
+									"    pm.expect(res.brand).to.eql(req.brand);\r",
+									"    pm.expect(res.category).to.eql(req.category);\r",
+									"    pm.expect(res.countInStock).to.eql(req.countInStock);\r",
+									"\r",
+									"    // Kiểm tra nếu field reviews không có trong request thì có thể mặc định [] trong response\r",
+									"    pm.expect(res).to.have.property('reviews');\r",
+									"    pm.expect(res.reviews).to.be.an('array');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Product Without Reviews\",\r\n  \"brand\": \"NoReview Brand\",\r\n  \"category\": \"NoReview Category\",\r\n  \"description\": \"Product without any reviews yet.\",\r\n  \"image\": \"/images/noreview.jpg\",\r\n  \"price\": 150,\r\n  \"countInStock\": 30,\r\n  \"rating\": 4.0,\r\n  \"numReviews\": 0\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}",
+							"host": [
+								"{{env_variable}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_03 - Boundary values for price = 0, countInStock = 99999",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400 or 500\", function () {\r",
+									"    pm.expect(pm.response.code === 400 || pm.response.code === 500).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Malformed ID error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res.message).to.include(\"Cast to ObjectId failed\").or.to.include(\"invalid\").or.to.include(\"not valid\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Boundary Test Product\",\r\n  \"brand\": \"Boundary Brand\",\r\n  \"category\": \"Boundary Category\",\r\n  \"description\": \"Testing boundary values for price and stock.\",\r\n  \"image\": \"/images/boundary.jpg\",\r\n  \"price\": 0,\r\n  \"countInStock\": 99999,\r\n  \"rating\": 5.0,\r\n  \"numReviews\": 0,\r\n  \"reviews\": []\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}",
+							"host": [
+								"{{env_variable}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Structure",
+			"item": [
+				{
+					"name": "TC_S01 – Incorrect URL (missing \"s\" in products) Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S01: Missing ID in URL\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Endpoint not found error\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\").or.to.include(\"cannot\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/product",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S02-Wrong HTTP method",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S02: Wrong endpoint (missing 's' in products)\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Not found error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S03 – Extra slash at the end of the URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S03: Extra slash at the end\r",
+									"pm.test(\"Status code is 201 Created or 404 Not Found\", function () {\r",
+									"    pm.expect(pm.response.code === 201 || pm.response.code === 404).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check response when extra slash\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.be.an(\"object\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S04 – Extra path after the valid endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S04: Extra path after URL\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Not found error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products/extra",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products",
+								"extra"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Other",
+			"item": [
+				{
+					"name": "TC_S10 –Missing Content-Type header",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 415 Unsupported Media Type (Missing Content-Type)\", function () {\r",
+									"    pm.response.to.have.status(415);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check error message for missing Content-Type\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"content-type\").or.to.include(\"unsupported media type\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S11 –Incorrect Content-Type value",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 415 or 400 (Incorrect Content-Type)\", function () {\r",
+									"    pm.expect(pm.response.code === 415 || pm.response.code === 400).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check error message for incorrect Content-Type\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"unsupported media type\").or.to.include(\"invalid content-type\").or.to.include(\"bad request\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A01 - No Authorization token Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing token error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not authorized\").or.to.include(\"no token\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Good\", \"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A02 - Token with invalid format Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid token format error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(\r",
+									"        res.message.toLowerCase()\r",
+									"    ).to.satisfy(function (msg) {\r",
+									"        return msg.includes(\"not authorized\") || msg.includes(\"no token\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "haudjncjncsajnjjjjjjjjjnhbhfgyrrrrrrrrrrrhbcjhsnjamksdjadshjsajnjmsdjjdijiwdjwmkmwekmkemwkdwjdnjwdnjwnjwdndjnjndmmalkoqkokqodkdmkcmckmc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Good\", \"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A03 - Authenticated user submits review Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_A03: Authenticated user submits review\r",
+									"pm.test(\"Status code is 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Review added successfully by user\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\");\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"review\").or.to.include(\"created\").or.to.include(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Not bad\", \"rating\": 3}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

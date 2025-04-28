@@ -1,0 +1,1119 @@
+{
+	"info": {
+		"_postman_id": "9d19c363-2d69-44ab-b057-f181e632438d",
+		"name": "API Review Create Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23361327"
+	},
+	"item": [
+		{
+			"name": "Functional",
+			"item": [
+				{
+					"name": "TC_F01-Add a review to an existing product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_F01: Add review to existing product\r",
+									"pm.test(\"Status code is 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Review added successfully\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\");\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"review\").or.to.include(\"created\").or.to.include(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Great!\", \r\n\"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_F02 - Review a non-existing product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_F02: Review non-existing product\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product not found message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\").or.to.include(\"product not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Great!\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}/@@hjdjd234/reviews",
+							"host": [
+								"{{env_variable}}"
+							],
+							"path": [
+								"@@hjdjd234",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_F03 - Review product with valid ObjectID but not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_F03: Review product valid ObjectID but no match\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product not found message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\").or.to.include(\"product not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Good\", \"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}/507f1f77bcf86cd799439011/reviews",
+							"host": [
+								"{{env_variable}}"
+							],
+							"path": [
+								"507f1f77bcf86cd799439011",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_F04 - Submit a review with minimum rating",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_F04: Submit review with minimum rating\r",
+									"pm.test(\"Status code is 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Review added successfully with minimum rating\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\");\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"review\").or.to.include(\"created\").or.to.include(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 1}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_F05 - Submit a review with maximum rating",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_F05: Submit review with maximum rating\r",
+									"pm.test(\"Status code is 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Review added successfully with maximum rating\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\");\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"review\").or.to.include(\"created\").or.to.include(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Structure",
+			"item": [
+				{
+					"name": "TC_S01 – Missing product ID in URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S01: Missing ID in URL\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Endpoint not found error\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\").or.to.include(\"cannot\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}//reviews",
+							"host": [
+								"{{env_variable}}"
+							],
+							"path": [
+								"",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S02-Incorrect endpoint path",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S02: Wrong endpoint (missing 's' in products)\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Not found error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/product{{validId}}/reviews",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"product{{validId}}",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S03 – Extra slash at the end of the URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S03: Extra slash at the end\r",
+									"pm.test(\"Status code is 201 Created or 404 Not Found\", function () {\r",
+									"    pm.expect(pm.response.code === 201 || pm.response.code === 404).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check response when extra slash\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.be.an(\"object\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews/",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S04 – Extra path after the valid endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S04: Extra path after URL\r",
+									"pm.test(\"Status code is 404 Not Found\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Not found error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews/extra",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews",
+								"extra"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S05-Wrong method: GET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S05: Wrong method - GET\r",
+									"pm.test(\"Status code is 405 or 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([405, 404]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Wrong method or not found error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S06-Wrong method: DELETE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_S06: Wrong method - DELETE\r",
+									"pm.test(\"Status code is 405 or 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([405, 404]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Wrong method or not found error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not found\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"OK\", \"rating\": 5}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}/?id={{validId}}/reviews",
+							"host": [
+								"{{env_variable}}"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{validId}}/reviews"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "TC_A01 - No Authorization token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing token error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"not authorized\").or.to.include(\"no token\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Good\", \"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A02 - Token with invalid format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid token format error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(\r",
+									"        res.message.toLowerCase()\r",
+									"    ).to.satisfy(function (msg) {\r",
+									"        return msg.includes(\"not authorized\") || msg.includes(\"no token\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "haudjncjncsajnjjjjjjjjjnhbhfgyrrrrrrrrrrrhbcjhsnjamksdjadshjsajnjmsdjjdijiwdjwmkmwekmkemwkdwjdnjwdnjwnjwdndjnjndmmalkoqkokqodkdmkcmckmc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Good\", \"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A03 - Authenticated user submits review",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_A03: Authenticated user submits review\r",
+									"pm.test(\"Status code is 201 Created\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Review added successfully by user\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\");\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"review\").or.to.include(\"created\").or.to.include(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Not bad\", \"rating\": 3}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A04 - Authenticated admin submits review",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_A04: Authenticated admin submits review\r",
+									"pm.test(\"Status code is 202 Accepted\", function () {\r",
+									"    pm.response.to.have.status(202);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Review added successfully by admin\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\");\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"review\").or.to.include(\"created\").or.to.include(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Good\", \"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Other",
+			"item": [
+				{
+					"name": "TC_V01 - Missing comment field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_V01: Missing comment field\r",
+									"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing comment field error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"comment\").or.to.include(\"required\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"rating\": 4}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_V02 - Missing rating field",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_V02: Missing rating field\r",
+									"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing rating field error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"rating\").or.to.include(\"required\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Great\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_V03 - Invalid rating value (-1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_V03: Invalid rating value (-1)\r",
+									"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid rating value error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"invalid\").or.to.include(\"rating\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Bad\", \"rating\": -1}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_V04 - Invalid rating value (6)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_V04: Invalid rating value (6)\r",
+									"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid rating value error message\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"invalid\").or.to.include(\"rating\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Too good\", \"rating\": 6}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_V05 - Rating as a string",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// TC_V05: Rating as a string\r",
+									"pm.test(\"Status code is either 400 or 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 201]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Check if error or success message depending on response\", function () {\r",
+									"    const res = pm.response.json();\r",
+									"    if (pm.response.code === 400) {\r",
+									"        pm.expect(res.message.toLowerCase()).to.include(\"invalid\").or.to.include(\"rating\");\r",
+									"    } else if (pm.response.code === 201) {\r",
+									"        pm.expect(res.message.toLowerCase()).to.include(\"added\").or.to.include(\"success\");\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"comment\": \"Okay\", \"rating\": \"5\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/reviews",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

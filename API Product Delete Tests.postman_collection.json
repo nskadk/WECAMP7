@@ -1,0 +1,499 @@
+{
+	"info": {
+		"_postman_id": "6069250d-58c5-454d-af88-2fb5abc7b213",
+		"name": "API Product Delete Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23361327"
+	},
+	"item": [
+		{
+			"name": "Functional",
+			"item": [
+				{
+					"name": "TC_F01 - Delete an existing product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product deleted successfully\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\", \"Product removed\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_F02 - Delete a non-existing product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product not found error\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res).to.have.property(\"message\", \"Product not found\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}/507f1f77bcf86cd799439011",
+							"host": [
+								"{{env_variable}}"
+							],
+							"path": [
+								"507f1f77bcf86cd799439011"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_F03 - Send request with malformed ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404 or 500\", function () {\r",
+									"    pm.expect(pm.response.code === 404 || pm.response.code === 500).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Malformed ID error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res.message).to.include(\"Cast to ObjectId failed\").or.to.include(\"invalid\").or.to.include(\"not valid\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}/@@@invalid###",
+							"host": [
+								"{{env_variable}}"
+							],
+							"path": [
+								"@@@invalid"
+							],
+							"hash": "##"
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Structure",
+			"item": [
+				{
+					"name": "TC_S01 – Missing product ID in URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TC_S01: Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"TC_S01: Message indicates endpoint not found\", function () {\r",
+									"    const res = pm.response.text();\r",
+									"    pm.expect(res).to.match(/(not\\s*found|cannot\\s*PUT)/i);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}",
+							"host": [
+								"{{env_variable}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S02-Incorrect endpoint path",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TC_S02: Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"TC_S02: Message indicates endpoint not found\", function () {\r",
+									"    const res = pm.response.text();\r",
+									"    pm.expect(res).to.match(/(not\\s*found|cannot\\s*PUT)/i);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/product{{validId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"product{{validId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S03 – Extra slash at the end of the URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TC_S03: Status code is 200 or 404\", function () {\r",
+									"    pm.expect([200, 404]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"TC_S03: Response indicates success or not found\", function () {\r",
+									"    const res = pm.response.text();\r",
+									"    if (pm.response.code === 404) {\r",
+									"        pm.expect(res).to.match(/(not\\s*found|cannot\\s*PUT)/i);\r",
+									"    } else {\r",
+									"        const json = pm.response.json();\r",
+									"        pm.expect(json).to.have.property('name');\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_S04 – Extra path after the valid endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"TC_S04: Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"TC_S04: Message indicates invalid path\", function () {\r",
+									"    const res = pm.response.text();\r",
+									"    pm.expect(res).to.match(/(not\\s*found|cannot\\s*PUT)/i);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}/extra",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							],
+							"path": [
+								"extra"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Other",
+			"item": [
+				{
+					"name": "TC_A01 - No Authorization token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing token error message (flexible check)\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    const msg = res.message.toLowerCase();\r",
+									"    pm.expect(msg.includes(\"not authorized\") || msg.includes(\"no token\")).to.be.true;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{adminToken}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A02 - Authorization header with invalid format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid token format error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(\r",
+									"        res.message.toLowerCase()\r",
+									"    ).to.satisfy(function (msg) {\r",
+									"        return msg.includes(\"not authorized\") || msg.includes(\"no token\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "haudjncjncsajnjjjjjjjjjnhbhfgyrrrrrrrrrrrhbcjhsnjamksdjadshjsajnjmsdjjdijiwdjwmkmwekmkemwkdwjdnjwdnjwnjwdndjnjndmmalkoqkokqodkdmkcmckmc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A03 - Token of regular user (not admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Not authorized as admin message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(\r",
+									"        res.message.toLowerCase()\r",
+									"    ).to.satisfy(function (msg) {\r",
+									"        return msg.includes(\"not authorized\") || msg.includes(\"admin only\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{userToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TC_A04 - Valid token but expired",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Expired token error message\", function () {\r",
+									"    var res = pm.response.json();\r",
+									"    pm.expect(res.message.toLowerCase()).to.include(\"token expired\").or.to.include(\"jwt expired\").or.to.include(\"unauthorized\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{expiredToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{env_variable}}{{validId}}",
+							"host": [
+								"{{env_variable}}{{validId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

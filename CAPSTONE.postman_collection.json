@@ -1,0 +1,610 @@
+{
+	"info": {
+		"_postman_id": "c5abaef3-ccc2-49b1-b7ef-38542b988f14",
+		"name": "CAPSTONE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23361327"
+	},
+	"item": [
+		{
+			"name": "Get list product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains products, page, and pages\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"products\");\r",
+							"    pm.expect(jsonData).to.have.property(\"page\");\r",
+							"    pm.expect(jsonData).to.have.property(\"pages\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each product has required fields\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.products).to.be.an(\"array\");\r",
+							"\r",
+							"    if (jsonData.products.length > 0) {\r",
+							"        const product = jsonData.products[0];\r",
+							"        const expectedFields = [\r",
+							"            \"_id\", \"name\", \"price\", \"image\", \"brand\", \"category\",\r",
+							"            \"description\", \"rating\", \"numReviews\", \"countInStock\",\r",
+							"            \"reviews\", \"__v\", \"createdAt\", \"updatedAt\"\r",
+							"        ];\r",
+							"        \r",
+							"        expectedFields.forEach(field => {\r",
+							"            pm.expect(product).to.have.property(field);\r",
+							"        });\r",
+							"    } else {\r",
+							"        console.warn(\"No products found to validate structure.\");\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate data types: rating, countInStock, reviews\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    \r",
+							"    jsonData.products.forEach(product => {\r",
+							"        pm.expect(product.rating).to.be.a(\"number\");\r",
+							"        pm.expect(product.countInStock).to.be.a(\"number\");\r",
+							"        pm.expect(product.reviews).to.be.an(\"array\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"page and pages are positive integers or null\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"\r",
+							"    const isPositiveIntOrNull = val =>\r",
+							"        val === null || (Number.isInteger(val) && val >= 0);\r",
+							"\r",
+							"    pm.expect(isPositiveIntOrNull(jsonData.page)).to.be.true;\r",
+							"    pm.expect(isPositiveIntOrNull(jsonData.pages)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"DELETE,PUT method is not allowed (404)\", function () {\r",
+							"    pm.expect([405, 404]).to.include(pm.response.code);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Typo in endpoint returns 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Extra slash returns 404 or normalized\", function () {\r",
+							"    pm.expect([404, 200]).to.include(pm.response.code);\r",
+							"\r",
+							"    if (pm.response.code === 200) {\r",
+							"        const jsonData = pm.response.json();\r",
+							"        pm.expect(jsonData).to.have.property(\"products\");\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2ZjY2FkMGVlMTEzZDY4NzZmYjg0ODEiLCJpYXQiOjE3NDU1ODc5NjIsImV4cCI6MTc0ODE3OTk2Mn0.Q633a8KCW4-zovp5m7hRKOZeAfe6n4PlCZYHBiTjkvU",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{env_variable}}",
+					"host": [
+						"{{env_variable}}"
+					],
+					"query": [
+						{
+							"key": "Cookie",
+							"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2ZjY2FkMGVlMTEzZDY4NzZmYjg0ODEiLCJpYXQiOjE3NDUyMTkxMTYsImV4cCI6MTc0NzgxMTExNn0.V9RM_0ghCWA2rZRBgsgF7z1amVZQo2VTJlqt9yBHu4k",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Top 3 rated product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"TC_01 - Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC_01 - Response is valid array\", () => {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(Array.isArray(json)).to.be.true;\r",
+							"});\r",
+							"pm.test(\"TC_02 - Each product has expected fields\", () => {\r",
+							"    const products = pm.response.json();\r",
+							"    const expectedFields = [\"_id\", \"name\", \"price\", \"image\", \"brand\", \"category\", \"description\", \"rating\", \"numReviews\", \"countInStock\", \"reviews\"];\r",
+							"    \r",
+							"    products.forEach(product => {\r",
+							"        expectedFields.forEach(field => {\r",
+							"            pm.expect(product).to.have.property(field);\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC_04 - All products have rating >= 4\", () => {\r",
+							"    const products = pm.response.json();\r",
+							"    products.forEach(product => {\r",
+							"        pm.expect(product.rating).to.be.at.least(4);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"TC_05 - Status is 200 for regular list\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"TC_05 - Response likely contains full product list\", () => {\r",
+							"    const products = pm.response.json();\r",
+							"    pm.expect(products.length).to.be.greaterThan(3); // assuming more products\r",
+							"});\r",
+							"pm.test(\"TC_06 - Wrong endpoint should return 404\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});\r",
+							"pm.test(\"TC_07 - URL with trailing slash still works\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"pm.test(\"TC_08 - Extra path returns 404\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});\r",
+							"pm.test(\"TC_09/10 - Unsupported method returns 404 or 405\", () => {\r",
+							"    pm.expect([404, 405]).to.include(pm.response.code);\r",
+							"});\r",
+							"pm.test(\"TC_11 - Still returns 200 without Content-Type\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"TC_12 - Incorrect Content-Type may return 400\", () => {\r",
+							"    pm.expect([200, 400]).to.include(pm.response.code);\r",
+							"});\r",
+							"pm.test(\"TC_13 - Server ignores body for GET\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2ZjY2FkMGVlMTEzZDY4NzZmYjg0ODEiLCJpYXQiOjE3NDUzODM5OTIsImV4cCI6MTc0Nzk3NTk5Mn0.QxAmUFAtVfLiJEaXx62d0x_R-PQrk-br_uwBLl9dg0Y",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "message/http",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_id\": \"67fccad0ee113d6876fb8488\",\r\n        \"user\": \"67fccad0ee113d6876fb8481\",\r\n        \"name\": \"Sony Playstation 5\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{env_variable}}/top",
+					"host": [
+						"{{env_variable}}"
+					],
+					"path": [
+						"top"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve a product by its ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains all required fields\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    const expectedFields = [\r",
+							"        \"_id\", \"name\", \"price\", \"image\", \"brand\", \"category\",\r",
+							"        \"description\", \"rating\", \"numReviews\", \"countInStock\",\r",
+							"        \"reviews\", \"__v\", \"createdAt\", \"updatedAt\"\r",
+							"    ];\r",
+							"    expectedFields.forEach(field => {\r",
+							"        pm.expect(json).to.have.property(field);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message is 'Product not found'\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json.message).to.include(\"Product not found\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response should be product not found\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json.message).to.include(\"Product not found\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response structure includes all fields\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    const fields = [\r",
+							"        \"_id\", \"name\", \"price\", \"image\", \"brand\", \"category\",\r",
+							"        \"description\", \"rating\", \"numReviews\", \"countInStock\",\r",
+							"        \"reviews\", \"__v\", \"createdAt\", \"updatedAt\"\r",
+							"    ];\r",
+							"    fields.forEach(field => {\r",
+							"        pm.expect(json).to.have.property(field);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Should return product list (products, page, pages)\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"products\");\r",
+							"    pm.expect(jsonData).to.have.property(\"page\");\r",
+							"    pm.expect(jsonData).to.have.property(\"pages\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Typo in endpoint returns 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Extra path returns 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"pm.test(\"Trailing slash returns 200 or 404\", function () {\r",
+							"    pm.expect([200, 404]).to.include(pm.response.code);\r",
+							"\r",
+							"    if (pm.response.code === 200) {\r",
+							"        const json = pm.response.json();\r",
+							"        const requiredFields = [\"_id\", \"name\"];\r",
+							"        requiredFields.forEach(field => {\r",
+							"            pm.expect(json).to.have.property(field);\r",
+							"        });\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Invalid ID format returns 400 or 404\", function () {\r",
+							"    pm.expect([400, 404]).to.include(pm.response.code);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"POST method is not allowed on this endpoint\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(405);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 200 without Content-Type header\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is valid even without Content-Type header\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.be.an(\"object\");\r",
+							"});\r",
+							"pm.test(\"Wrong Content-Type header still returns 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response structure is still valid despite wrong header\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.be.an(\"object\");\r",
+							"});\r",
+							"pm.test(\"Status is 200 or ignored if body sent in GET\", function () {\r",
+							"    pm.expect([200, 204]).to.include(pm.response.code);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"GET request with body should return valid product\", function () {\r",
+							"    const json = pm.response.json();\r",
+							"    const requiredFields = [\"_id\", \"name\", \"price\"];\r",
+							"    requiredFields.forEach(field => {\r",
+							"        pm.expect(json).to.have.property(field);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"SQL injection attempt is blocked or returns 404/400\", function () {\r",
+							"    pm.expect([404, 400]).to.include(pm.response.code);\r",
+							"});\r",
+							"pm.test(\"XSS attempt with <script> in ID returns 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"No script execution or code exposure\", function () {\r",
+							"    const body = pm.response.text();\r",
+							"    pm.expect(body).to.not.include(\"<script>\");\r",
+							"    pm.expect(body).to.not.include(\"alert\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/atom+xml",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2ZjY2FkMGVlMTEzZDY4NzZmYjg0ODEiLCJpYXQiOjE3NDUzODM5OTIsImV4cCI6MTc0Nzk3NTk5Mn0.QxAmUFAtVfLiJEaXx62d0x_R-PQrk-br_uwBLl9dg0Y",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_id\": \"67fccad0ee113d6876fb8488\",\r\n        \"user\": \"67fccad0ee113d6876fb8481\",\r\n        \"name\": \"Sony Playstation 5\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{env_variable}}/67fccad0ee113d6876fb8485",
+					"host": [
+						"{{env_variable}}"
+					],
+					"path": [
+						"67fccad0ee113d6876fb8485"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create product",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.kdjiodhidehihjjjjjjjjjjjjjjwnnklasxlclalcsmclkmcl.QxAmUFAtVfLiJEaXx62d0x_R-PQrk-br_uwBLl9dg0Y",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "multipart/encrypted",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"_id\": \"67fccad0ee223d6876fb8489\",\r\n        \"user\": \"67fccfb474ad82de110267c7\",\r\n        \"name\": \"\",\r\n        \"image\": \"/images/playstation.jpg\",\r\n        \"brand\": \"Sony\",\r\n        \"category\": \"Electronics\",\r\n        \"description\": \"The ultimate home entertainment center starts with PlayStation. Whether you are into gaming, HD movies, television, music\",\r\n        \"price\": \"jdijdjdkdlkkd\",\r\n        \"countInStock\": 999999,\r\n        \"reviews\": [],\r\n        \"__v\": 0,\r\n        \"createdAt\": \"2025-04-23T08:44:00.665Z\",\r\n        \"updatedAt\": \"2025-04-23T08:44:00.665Z\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{env_variable}}",
+					"host": [
+						"{{env_variable}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a product (Admin only)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains updated product fields\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    const expectedFields = [\r",
+							"        \"_id\", \"name\", \"price\", \"description\", \"image\", \"brand\",\r",
+							"        \"category\", \"countInStock\", \"rating\", \"numReviews\", \"reviews\",\r",
+							"        \"createdAt\", \"updatedAt\"\r",
+							"    ];\r",
+							"\r",
+							"    expectedFields.forEach(field => {\r",
+							"        pm.expect(jsonData).to.have.property(field);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data types are correct\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(jsonData.price).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.countInStock).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.rating).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.numReviews).to.be.a(\"number\");\r",
+							"    pm.expect(jsonData.reviews).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status code is 404 Not Found\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response message says product not found\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include(\"not found\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code is 400 Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains validation error messages\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"message\");\r",
+							"    pm.expect(jsonData.message.toLowerCase()).to.include(\"validation\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2ZjY2FkMGVlMTEzZDY4NzZmYjg0ODEiLCJpYXQiOjE3NDU2NDc4NjQsImV4cCI6MTc0ODIzOTg2NH0.MesgblkTGy04Vfpssrujvq867hqCzzfMNlQE5MNjQIw",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2ZjY2ZiNDc0YWQ4MmRlMTEwMjY3YzciLCJpYXQiOjE3NDU2NDkwNzMsImV4cCI6MTc0ODI0MTA3M30.gL3XaIVyHPE1HFWgx8PKPArXyJSMydoul96ph_4abgc",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " {\r\n            \"_id\": \"68088ebfd55db82994df17ce\",\r\n            \"user\": \"67fccad0ee113d6876fb8481\",\r\n            \"name\": \"Sample name\",\r\n            \"image\": \"/images/sample.jpg\",\r\n            \"brand\": \"Sample brand\",\r\n            \"category\": \"Sample category\",\r\n            \"description\": \"Sample description\",\r\n            \"rating\": 0,\r\n            \"numReviews\": \"bad format\",\r\n            \"price\": 100,\r\n            \"countInStock\": 0,\r\n            \"reviews\": \"bad format\",\r\n            \"createdAt\": \"2025-04-23T06:54:55.853Z\",\r\n            \"updatedAt\": \"2025-04-23T06:54:55.853Z\",\r\n            \"__v\": 0\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{env_variable}}/68088e87d55db82994df17cb/",
+					"host": [
+						"{{env_variable}}"
+					],
+					"path": [
+						"68088e87d55db82994df17cb",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a product  (Admin only)",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{env_variable}}/67fccad0ee113d6876fb8488",
+					"host": [
+						"{{env_variable}}"
+					],
+					"path": [
+						"67fccad0ee113d6876fb8488"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a product review",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{env_variable}}/{id}/reviews",
+					"host": [
+						"{{env_variable}}"
+					],
+					"path": [
+						"{id}",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
